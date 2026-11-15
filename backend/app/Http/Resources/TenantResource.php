@@ -11,7 +11,7 @@ class TenantResource extends JsonResource
     public function toArray(Request $request): array
     {
         $role = null;
-        if ($request->user() && $this->pivot?->role) {
+        if ($this->pivot?->role) {
             $role = $this->pivot->role;
         } elseif ($request->user()?->is_super_admin) {
             $role = 'owner';

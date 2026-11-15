@@ -20,9 +20,25 @@ Architecture blueprint (interactive): [SocialPilot Marketing — Futuristic Arch
 cd backend
 cp .env.example .env   # if needed
 composer install
+php artisan key:generate    # required — missing APP_KEY causes 500 on register
+touch database/database.sqlite   # only if DB_CONNECTION=sqlite (default)
 php artisan migrate
 php artisan serve
 ```
+
+**Verify API before registering:** open [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health) — should return `"status":"ok"`. If not, follow the `hint` in the JSON response.
+
+### Register returns 500?
+
+| Cause | Fix |
+|-------|-----|
+| No `APP_KEY` | `php artisan key:generate` |
+| DB not migrated | `php artisan migrate` |
+| SQLite file missing | `touch backend/database/database.sqlite` |
+| MySQL misconfigured | Use SQLite for local dev, or create DB and set `DB_*` in `.env` |
+| `vendor/` missing | `composer install` |
+
+The `WebSocket … HMR … Back-Forward Cache` message in the browser is harmless (Next.js hot reload); ignore it.
 
 Run tests:
 

@@ -64,8 +64,19 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     if (response.status === 401) {
       clearSession();
     }
-    const message =
-      (payload as { message?: string })?.message ?? "Request failed.";
+    const body = payload as {
+      message?: string;
+      errors?: Record<string, string[]>;
+      exception?: string;
+    };
+    let message = body.message ?? "Request failed.";
+    if (body.errors) {
+      message = Object.values(body.errors).flat().join(" ");
+    } else if (response.status >= 500) {
+      message =
+        body.message ??
+        "Server error — check backend setup (php artisan key:generate && php artisan migrate).";
+    }
     throw new ApiError(message, response.status, payload);
   }
 
