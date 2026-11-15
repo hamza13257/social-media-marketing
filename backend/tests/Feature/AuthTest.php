@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SubscriptionStatus;
 use App\Models\Tenant;
 use App\Models\User;
+use Database\Seeders\SubscriptionPlanSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,6 +15,8 @@ class AuthTest extends TestCase
 
     public function test_user_can_register_with_default_organization(): void
     {
+        $this->seed(SubscriptionPlanSeeder::class);
+
         $response = $this->postJson('/api/auth/register', [
             'name' => 'Hamza',
             'email' => 'hamza@example.com',
@@ -26,6 +30,12 @@ class AuthTest extends TestCase
 
         $this->assertDatabaseHas('users', ['email' => 'hamza@example.com']);
         $this->assertDatabaseHas('tenants', ['name' => 'Marketing HQ']);
+
+        $tenant = Tenant::query()->where('name', 'Marketing HQ')->firstOrFail();
+        $this->assertDatabaseHas('subscriptions', [
+            'tenant_id' => $tenant->id,
+            'status' => SubscriptionStatus::ManualPending->value,
+        ]);
     }
 
     public function test_user_can_login_and_receive_token(): void

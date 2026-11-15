@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Enums\TenantRole;
 use App\Models\Brand;
 use App\Models\User;
+use App\Services\Billing\SubscriptionQuotaService;
 use App\Support\CurrentTenant;
 
 class BrandPolicy
@@ -23,7 +24,22 @@ class BrandPolicy
 
     public function create(User $user): bool
     {
-        return $this->memberWithBrandAccess();
+        if (! $this->memberWithBrandAccess()) {
+            return false;
+        }
+
+        if (! config('billing.enforce_active_subscription')) {
+            return true;
+        }
+
+        $tenant = $this->currentTenant->tenant();
+        $quota = app(SubscriptionQuotaService::class);
+
+        if (! $quota->subscriptionIsUsable($tenant)) {
+            return false;
+        }
+
+        return $quota->withinLimit($tenant, 'brands', $tenant->brands()->count());
     }
 
     public function update(User $user, Brand $brand): bool

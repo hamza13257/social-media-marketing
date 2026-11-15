@@ -11,6 +11,7 @@ const nav = [
   { href: "/content-studio", label: "Content studio" },
   { href: "/approvals", label: "Approvals" },
   { href: "/calendar", label: "Calendar" },
+  { href: "/billing", label: "Billing" },
 ];
 
 export function Sidebar() {
@@ -27,6 +28,18 @@ export function Sidebar() {
     </div>
 
     <nav className="space-y-1">
+      {user?.is_super_admin && (
+        <Link
+          href="/admin"
+          className={`mb-2 block rounded-lg px-3 py-2 text-sm font-medium transition ${
+            pathname.startsWith("/admin")
+              ? "bg-violet-600/20 text-violet-200"
+              : "text-slate-300 hover:bg-slate-900 hover:text-white"
+          }`}
+        >
+          Admin
+        </Link>
+      )}
       {nav.map((item) => {
         const active =
           pathname === item.href || pathname.startsWith(`${item.href}/`);

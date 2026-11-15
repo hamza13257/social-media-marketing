@@ -6,9 +6,10 @@ return [
 
     'api_key' => env('AI_API_KEY'),
 
-    'base_url' => env('AI_BASE_URL', 'https://api.openai.com/v1'),
+    // Groq: AI_BASE_URL=https://api.groq.com/openai/v1  AI_MODEL=llama-3.3-70b-versatile
+    'base_url' => env('AI_BASE_URL', 'https://api.groq.com/openai/v1'),
 
-    'model' => env('AI_MODEL', 'gpt-4o-mini'),
+    'model' => env('AI_MODEL', 'llama-3.3-70b-versatile'),
 
     'timeout' => (int) env('AI_TIMEOUT', 60),
 ];

@@ -34,4 +34,9 @@ class Tenant extends Model
     {
         return $this->hasMany(SocialAccount::class);
     }
+
+    public function subscription(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Subscription::class);
+    }
 }
