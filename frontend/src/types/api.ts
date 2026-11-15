@@ -44,3 +44,30 @@ export type MeResponse = {
   user: User;
   tenants: Tenant[];
 };
+
+export type SocialAccount = {
+  id: number;
+  tenant_id: number;
+  brand_id: number | null;
+  platform: string;
+  platform_label: string;
+  external_id: string;
+  name: string;
+  username: string | null;
+  profile_picture_url: string | null;
+  connection_status: string;
+  token_expires_at: string | null;
+  last_error: string | null;
+  connected_at: string | null;
+  brand?: { id: number; name: string } | null;
+};
+
+export type SocialAccountsResponse = {
+  data: SocialAccount[];
+  meta: { meta_configured: boolean };
+};
+
+export type MetaOAuthUrlResponse = {
+  authorize_url: string;
+  state: string;
+};

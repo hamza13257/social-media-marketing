@@ -2,6 +2,9 @@ import type {
   AuthResponse,
   Brand,
   MeResponse,
+  MetaOAuthUrlResponse,
+  SocialAccount,
+  SocialAccountsResponse,
   Tenant,
 } from "@/types/api";
 import {
@@ -143,6 +146,35 @@ export const api = {
   deleteBrand(id: number) {
     return request<void>(`/api/brands/${id}`, {
       method: "DELETE",
+      tenantScoped: true,
+    });
+  },
+
+  listSocialAccounts(params?: { brand_id?: number }) {
+    const query = params?.brand_id ? `?brand_id=${params.brand_id}` : "";
+    return request<SocialAccountsResponse>(`/api/social-accounts${query}`, {
+      tenantScoped: true,
+    });
+  },
+
+  updateSocialAccount(id: number, body: { brand_id: number | null }) {
+    return request<{ data: SocialAccount }>(`/api/social-accounts/${id}`, {
+      method: "PATCH",
+      body,
+      tenantScoped: true,
+    });
+  },
+
+  disconnectSocialAccount(id: number) {
+    return request<void>(`/api/social-accounts/${id}`, {
+      method: "DELETE",
+      tenantScoped: true,
+    });
+  },
+
+  metaOAuthUrl(brandId?: number) {
+    const query = brandId ? `?brand_id=${brandId}` : "";
+    return request<MetaOAuthUrlResponse>(`/api/meta/oauth/url${query}`, {
       tenantScoped: true,
     });
   },

@@ -30,4 +30,19 @@ enum TenantRole: string
             self::Editor => false,
         };
     }
+
+    public function canViewSocialAccounts(): bool
+    {
+        return match ($this) {
+            self::Owner, self::Admin, self::Editor => true,
+        };
+    }
+
+    public function canManageSocialAccounts(): bool
+    {
+        return match ($this) {
+            self::Owner, self::Admin => true,
+            self::Editor => false,
+        };
+    }
 }

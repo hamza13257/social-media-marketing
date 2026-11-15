@@ -29,4 +29,9 @@ class Tenant extends Model
     {
         return $this->hasMany(Brand::class);
     }
+
+    public function socialAccounts(): HasMany
+    {
+        return $this->hasMany(SocialAccount::class);
+    }
 }

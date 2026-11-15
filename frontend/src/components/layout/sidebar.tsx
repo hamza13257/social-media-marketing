@@ -7,6 +7,7 @@ import { useAuth } from "@/context/auth-context";
 const nav = [
   { href: "/dashboard", label: "Overview" },
   { href: "/brands", label: "Brands" },
+  { href: "/social-accounts", label: "Social accounts" },
 ];
 
 export function Sidebar() {

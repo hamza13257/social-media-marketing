@@ -57,6 +57,13 @@ npm run dev
 
 Set `NEXT_PUBLIC_API_URL` to your Laravel host (default `http://127.0.0.1:8000`).
 
+## Phase 2 — Meta OAuth (on branch / latest)
+
+- `social_accounts` table with encrypted tokens
+- Official Meta OAuth (Facebook Pages + Instagram Professional discovery)
+- `/social-accounts` dashboard + link accounts to brands
+- Docs: [docs/API-PHASE-2.md](docs/API-PHASE-2.md)
+
 ## Phase 1 scope (implemented)
 
 - Multi-tenant tables: `tenants`, `tenant_user`, `brands`
