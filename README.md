@@ -57,6 +57,13 @@ npm run dev
 
 Set `NEXT_PUBLIC_API_URL` to your Laravel host (default `http://127.0.0.1:8000`).
 
+## Phase 4 — Publishing
+
+- Facebook + Instagram Graph adapters, publishing logs, idempotent jobs
+- `POST /api/contents/{id}/publish`, `GET /api/publishing-logs`
+- Scheduler: `content:publish-due` every minute + `php artisan queue:work`
+- Docs: [docs/API-PHASE-4.md](docs/API-PHASE-4.md)
+
 ## Phase 3 — Content, AI & approvals
 
 - Content model + approval audit log

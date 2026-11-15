@@ -5,6 +5,9 @@ namespace App\Providers;
 use App\Models\User;
 use App\Services\Ai\AiClient;
 use App\Services\Ai\OpenAiCompatibleClient;
+use App\Services\Publishing\FacebookPublishingAdapter;
+use App\Services\Publishing\InstagramPublishingAdapter;
+use App\Services\Publishing\PublishingOrchestrator;
 use App\Support\CurrentTenant;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -20,6 +23,13 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(AiClient::class, function () {
             return new OpenAiCompatibleClient;
+        });
+
+        $this->app->singleton(PublishingOrchestrator::class, function () {
+            return new PublishingOrchestrator([
+                new FacebookPublishingAdapter,
+                new InstagramPublishingAdapter,
+            ]);
         });
     }
 

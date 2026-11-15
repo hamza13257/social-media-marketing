@@ -88,6 +88,20 @@ export type ContentItem = {
   version: number;
   brand?: { id: number; name: string };
   author?: { id: number; name: string };
+  social_account_id?: number | null;
+  external_post_id?: string | null;
+  published_at?: string | null;
+};
+
+export type PublishingLog = {
+  id: number;
+  content_id: number;
+  platform: string;
+  status: string;
+  external_post_id: string | null;
+  error_message: string | null;
+  started_at: string | null;
+  finished_at: string | null;
 };
 
 export type ContentsResponse = {

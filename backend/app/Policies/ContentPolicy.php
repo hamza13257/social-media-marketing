@@ -67,6 +67,13 @@ class ContentPolicy
             && $this->currentTenant->role()->canApproveContent();
     }
 
+    public function publish(User $user, Content $content): bool
+    {
+        return $this->sameTenant($content)
+            && $this->currentTenant->role()->canApproveContent()
+            && $content->isEligibleToPublish();
+    }
+
     private function sameTenant(Content $content): bool
     {
         return $this->currentTenant->isSet()

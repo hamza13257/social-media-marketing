@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\MetaOAuthController;
+use App\Http\Controllers\Api\PublishingLogController;
 use App\Http\Controllers\Api\SocialAccountController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Middleware\EnsureTenantContext;
@@ -41,5 +42,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('contents/{content}/request-changes', [ContentController::class, 'requestChanges']);
         Route::post('contents/{content}/schedule', [ContentController::class, 'schedule']);
         Route::post('contents/{content}/generate-caption', [ContentController::class, 'generateCaption']);
+        Route::post('contents/{content}/publish', [ContentController::class, 'publish']);
+
+        Route::get('publishing-logs', [PublishingLogController::class, 'index']);
     });
 });

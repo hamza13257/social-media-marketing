@@ -33,6 +33,9 @@ class Content extends Model
         'status',
         'version',
         'internal_notes',
+        'social_account_id',
+        'external_post_id',
+        'published_at',
     ];
 
     protected function casts(): array
@@ -44,7 +47,23 @@ class Content extends Model
             'hashtags' => 'array',
             'media_assets' => 'array',
             'scheduled_at' => 'datetime',
+            'published_at' => 'datetime',
         ];
+    }
+
+    public function socialAccount(): BelongsTo
+    {
+        return $this->belongsTo(SocialAccount::class);
+    }
+
+    public function publishingLogs(): HasMany
+    {
+        return $this->hasMany(PublishingLog::class);
+    }
+
+    public function isEligibleToPublish(): bool
+    {
+        return in_array($this->status, [ContentStatus::Approved, ContentStatus::Scheduled], true);
     }
 
     public function tenant(): BelongsTo

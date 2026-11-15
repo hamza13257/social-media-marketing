@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\ContentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Content\ApprovalActionRequest;
+use App\Http\Requests\Content\PublishContentRequest;
 use App\Http\Requests\Content\ScheduleContentRequest;
 use App\Http\Requests\Content\StoreContentRequest;
 use App\Http\Requests\Content\UpdateContentRequest;
@@ -13,6 +14,7 @@ use App\Models\Content;
 use App\Services\Ai\AiCaptionService;
 use App\Services\Ai\AiNotConfiguredException;
 use App\Services\Content\ContentApprovalService;
+use App\Jobs\PublishContentJob;
 use App\Support\CurrentTenant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -151,6 +153,22 @@ class ContentController extends Controller
         }
 
         return response()->json(['data' => new ContentResource($content)]);
+    }
+
+    public function publish(PublishContentRequest $request, Content $content): JsonResponse
+    {
+        $this->authorize('publish', $content);
+
+        PublishContentJob::dispatch(
+            $content->id,
+            $request->validated('social_account_id'),
+            'content:'.$content->id.':v'.$content->version,
+        );
+
+        return response()->json([
+            'message' => 'Publishing has been queued.',
+            'content_id' => $content->id,
+        ], 202);
     }
 
     public function generateCaption(Content $content): JsonResponse

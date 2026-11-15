@@ -23,10 +23,11 @@ enum ContentStatus: string
             self::PendingApproval => in_array($next, [self::Approved, self::ChangesRequested, self::Rejected, self::Draft], true),
             self::ChangesRequested => in_array($next, [self::Draft, self::PendingApproval], true),
             self::Rejected => in_array($next, [self::Draft], true),
-            self::Approved => in_array($next, [self::Scheduled, self::Draft, self::PendingApproval], true),
+            self::Approved => in_array($next, [self::Scheduled, self::Publishing, self::Draft, self::PendingApproval], true),
             self::Scheduled => in_array($next, [self::Publishing, self::Approved, self::Draft], true),
             self::Publishing => in_array($next, [self::Published, self::Failed], true),
-            self::Published, self::Failed => false,
+            self::Published => false,
+            self::Failed => in_array($next, [self::Draft, self::Approved, self::Scheduled], true),
         };
     }
 

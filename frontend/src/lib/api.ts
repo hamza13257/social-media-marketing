@@ -3,6 +3,7 @@ import type {
   Brand,
   ContentItem,
   ContentsResponse,
+  PublishingLog,
   MeResponse,
   MetaOAuthUrlResponse,
   SocialAccount,
@@ -257,6 +258,24 @@ export const api = {
     return request<{ data: ContentItem }>(`/api/contents/${id}/schedule`, {
       method: "POST",
       body: { scheduled_at: scheduledAt },
+      tenantScoped: true,
+    });
+  },
+
+  publishContent(id: number, socialAccountId?: number) {
+    return request<{ message: string; content_id: number }>(
+      `/api/contents/${id}/publish`,
+      {
+        method: "POST",
+        body: socialAccountId ? { social_account_id: socialAccountId } : {},
+        tenantScoped: true,
+      },
+    );
+  },
+
+  listPublishingLogs(contentId?: number) {
+    const q = contentId ? `?content_id=${contentId}` : "";
+    return request<{ data: PublishingLog[] }>(`/api/publishing-logs${q}`, {
       tenantScoped: true,
     });
   },
