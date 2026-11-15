@@ -1,1 +1,56 @@
-# social-media-marketing
+# SocialPilot Marketing (social-media-marketing)
+
+Multi-tenant social media marketing SaaS — **Phase 1** implements Laravel tenancy, auth, roles, and brand CRUD, plus a Next.js dashboard connected to the real API.
+
+## Stack
+
+| Layer | Path | Tech |
+|-------|------|------|
+| API | `backend/` | Laravel 13, Sanctum, MySQL/SQLite |
+| UI | `frontend/` | Next.js App Router, TypeScript, Tailwind |
+| Docs | `docs/` | API & architecture notes |
+
+Architecture blueprint (interactive): [SocialPilot Marketing — Futuristic Architecture Blueprint](https://cursor.com/canvas/store-7a2b7c15-1bf9-4e1b-b431-88b92d1969d1/1c07c63b-e84a-4634-ac76-1f342107e60b)
+
+## Local development
+
+### Backend
+
+```bash
+cd backend
+cp .env.example .env   # if needed
+composer install
+php artisan migrate
+php artisan serve
+```
+
+Run tests:
+
+```bash
+php artisan test
+```
+
+### Frontend
+
+```bash
+cd frontend
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+Set `NEXT_PUBLIC_API_URL` to your Laravel host (default `http://127.0.0.1:8000`).
+
+## Phase 1 scope (implemented)
+
+- Multi-tenant tables: `tenants`, `tenant_user`, `brands`
+- Sanctum API auth (register, login, logout, me)
+- Tenant header isolation (`X-Tenant-Id`)
+- Laravel policies + feature tests for cross-tenant denial
+- Next.js: login/register, dashboard shell, brand list/create/detail
+
+## Not in Phase 1
+
+Meta OAuth, AI, publishing, billing, calendar, approvals — see PRD §19.
+
+API details: [docs/API-PHASE-1.md](docs/API-PHASE-1.md)
