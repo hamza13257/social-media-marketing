@@ -57,6 +57,10 @@ npm run dev
 
 Set `NEXT_PUBLIC_API_URL` to your Laravel host (default `http://127.0.0.1:8000`).
 
+## Phase 5 — Billing & admin
+
+Manual subscriptions (`manual_pending` → super-admin activation), configurable `PAYMENT_GATEWAY`, tenant `/billing`, platform `/admin`. See `docs/MVP.md` and `docs/API-PHASE-5.md`.
+
 ## Phase 4 — Publishing
 
 - Facebook + Instagram Graph adapters, publishing logs, idempotent jobs
