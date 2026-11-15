@@ -1,5 +1,9 @@
 import type {
+  AdminDashboard,
+  AdminTenantRow,
+  AdminUserRow,
   AuthResponse,
+  BillingInfo,
   Brand,
   ContentItem,
   ContentsResponse,
@@ -8,6 +12,8 @@ import type {
   MetaOAuthUrlResponse,
   SocialAccount,
   SocialAccountsResponse,
+  SubscriptionPlan,
+  SubscriptionRecord,
   Tenant,
 } from "@/types/api";
 import {
@@ -277,6 +283,55 @@ export const api = {
     const q = contentId ? `?content_id=${contentId}` : "";
     return request<{ data: PublishingLog[] }>(`/api/publishing-logs${q}`, {
       tenantScoped: true,
+    });
+  },
+
+  billing() {
+    return request<BillingInfo>("/api/billing", { tenantScoped: true });
+  },
+
+  billingPlans() {
+    return request<{ data: SubscriptionPlan[] }>("/api/billing/plans", {
+      tenantScoped: true,
+    });
+  },
+
+  requestPlan(planSlug: string) {
+    return request<{ message: string; subscription: SubscriptionRecord }>(
+      "/api/billing/request-plan",
+      { method: "POST", body: { plan_slug: planSlug }, tenantScoped: true },
+    );
+  },
+
+  adminDashboard() {
+    return request<{ data: AdminDashboard }>("/api/admin/dashboard");
+  },
+
+  adminTenants() {
+    return request<{ data: AdminTenantRow[] }>("/api/admin/tenants");
+  },
+
+  adminPendingSubscriptions() {
+    return request<{ data: SubscriptionRecord[] }>(
+      "/api/admin/subscriptions/pending",
+    );
+  },
+
+  adminActivateSubscription(id: number, notes: string) {
+    return request<{ message: string }>(`/api/admin/subscriptions/${id}/activate`, {
+      method: "POST",
+      body: { notes },
+    });
+  },
+
+  adminUsers() {
+    return request<{ data: AdminUserRow[] }>("/api/admin/users");
+  },
+
+  adminSetSuperAdmin(userId: number, isSuperAdmin: boolean) {
+    return request<{ message: string }>(`/api/admin/users/${userId}/super-admin`, {
+      method: "PATCH",
+      body: { is_super_admin: isSuperAdmin },
     });
   },
 };

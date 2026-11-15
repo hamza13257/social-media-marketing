@@ -108,3 +108,55 @@ export type ContentsResponse = {
   data: ContentItem[];
   meta: { ai_configured: boolean };
 };
+
+export type SubscriptionPlan = {
+  id: number;
+  slug: string;
+  name: string;
+  description: string | null;
+  price_cents: number;
+  currency: string;
+  limits?: Record<string, number | null>;
+};
+
+export type SubscriptionRecord = {
+  id: number;
+  tenant_id: number;
+  status: string;
+  payment_gateway: string;
+  manual_payment_notes: string | null;
+  activated_at: string | null;
+  expires_at: string | null;
+  plan?: SubscriptionPlan;
+  tenant?: { id: number; name: string };
+};
+
+export type BillingInfo = {
+  data: SubscriptionRecord | null;
+  gateway: string;
+  manual_instructions?: string;
+};
+
+export type AdminDashboard = {
+  users: number;
+  tenants: number;
+  subscriptions_pending: number;
+  subscriptions_active: number;
+  payment_gateway: string;
+};
+
+export type AdminTenantRow = {
+  id: number;
+  name: string;
+  slug: string;
+  subscription?: SubscriptionRecord | null;
+  users_count?: number;
+  brands_count?: number;
+};
+
+export type AdminUserRow = {
+  id: number;
+  name: string;
+  email: string;
+  is_super_admin: boolean;
+};

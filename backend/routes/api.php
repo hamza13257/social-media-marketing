@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AdminDashboardController;
+use App\Http\Controllers\Api\Admin\AdminSubscriptionController;
+use App\Http\Controllers\Api\Admin\AdminTenantController;
+use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\HealthController;
@@ -45,5 +50,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('contents/{content}/publish', [ContentController::class, 'publish']);
 
         Route::get('publishing-logs', [PublishingLogController::class, 'index']);
+
+        Route::get('billing', [BillingController::class, 'subscription']);
+        Route::get('billing/plans', [BillingController::class, 'plans']);
+        Route::post('billing/request-plan', [BillingController::class, 'requestPlan']);
+    });
+
+    Route::middleware('super_admin')->prefix('admin')->group(function () {
+        Route::get('dashboard', AdminDashboardController::class);
+        Route::get('tenants', [AdminTenantController::class, 'index']);
+        Route::get('tenants/{tenant}', [AdminTenantController::class, 'show']);
+        Route::get('users', [AdminUserController::class, 'index']);
+        Route::patch('users/{user}/super-admin', [AdminUserController::class, 'updateSuperAdmin']);
+        Route::get('subscriptions/pending', [AdminSubscriptionController::class, 'pending']);
+        Route::post('subscriptions/{subscription}/activate', [AdminSubscriptionController::class, 'activate']);
+        Route::post('subscriptions/{subscription}/suspend', [AdminSubscriptionController::class, 'suspend']);
     });
 });
