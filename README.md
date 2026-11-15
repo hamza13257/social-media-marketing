@@ -57,7 +57,14 @@ npm run dev
 
 Set `NEXT_PUBLIC_API_URL` to your Laravel host (default `http://127.0.0.1:8000`).
 
-## Phase 2 — Meta OAuth (on branch / latest)
+## Phase 3 — Content, AI & approvals
+
+- Content model + approval audit log
+- Provider-agnostic AI caption generation (`AI_API_KEY`)
+- UI: Content studio, Approvals queue, Calendar list view
+- Docs: [docs/API-PHASE-3.md](docs/API-PHASE-3.md)
+
+## Phase 2 — Meta OAuth
 
 - `social_accounts` table with encrypted tokens
 - Official Meta OAuth (Facebook Pages + Instagram Professional discovery)

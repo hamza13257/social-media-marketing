@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const protectedPrefixes = ["/dashboard", "/brands", "/social-accounts"];
+const protectedPrefixes = [
+  "/dashboard",
+  "/brands",
+  "/social-accounts",
+  "/content-studio",
+  "/approvals",
+  "/calendar",
+];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("smm_token")?.value;
@@ -28,6 +35,9 @@ export const config = {
     "/dashboard/:path*",
     "/brands/:path*",
     "/social-accounts/:path*",
+    "/content-studio/:path*",
+    "/approvals/:path*",
+    "/calendar/:path*",
     "/login",
     "/register",
   ],

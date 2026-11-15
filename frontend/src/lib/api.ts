@@ -1,6 +1,8 @@
 import type {
   AuthResponse,
   Brand,
+  ContentItem,
+  ContentsResponse,
   MeResponse,
   MetaOAuthUrlResponse,
   SocialAccount,
@@ -175,6 +177,86 @@ export const api = {
   metaOAuthUrl(brandId?: number) {
     const query = brandId ? `?brand_id=${brandId}` : "";
     return request<MetaOAuthUrlResponse>(`/api/meta/oauth/url${query}`, {
+      tenantScoped: true,
+    });
+  },
+
+  listContents(params?: { status?: string; pending_only?: boolean; brand_id?: number }) {
+    const search = new URLSearchParams();
+    if (params?.status) search.set("status", params.status);
+    if (params?.pending_only) search.set("pending_only", "1");
+    if (params?.brand_id) search.set("brand_id", String(params.brand_id));
+    const q = search.toString();
+    return request<ContentsResponse>(`/api/contents${q ? `?${q}` : ""}`, {
+      tenantScoped: true,
+    });
+  },
+
+  createContent(body: Record<string, unknown>) {
+    return request<{ data: ContentItem }>("/api/contents", {
+      method: "POST",
+      body,
+      tenantScoped: true,
+    });
+  },
+
+  getContent(id: number) {
+    return request<{ data: ContentItem }>(`/api/contents/${id}`, {
+      tenantScoped: true,
+    });
+  },
+
+  updateContent(id: number, body: Record<string, unknown>) {
+    return request<{ data: ContentItem }>(`/api/contents/${id}`, {
+      method: "PATCH",
+      body,
+      tenantScoped: true,
+    });
+  },
+
+  submitContent(id: number, comment?: string) {
+    return request<{ data: ContentItem }>(`/api/contents/${id}/submit`, {
+      method: "POST",
+      body: { comment },
+      tenantScoped: true,
+    });
+  },
+
+  approveContent(id: number, comment?: string) {
+    return request<{ data: ContentItem }>(`/api/contents/${id}/approve`, {
+      method: "POST",
+      body: { comment },
+      tenantScoped: true,
+    });
+  },
+
+  rejectContent(id: number, comment?: string) {
+    return request<{ data: ContentItem }>(`/api/contents/${id}/reject`, {
+      method: "POST",
+      body: { comment },
+      tenantScoped: true,
+    });
+  },
+
+  requestContentChanges(id: number, comment?: string) {
+    return request<{ data: ContentItem }>(`/api/contents/${id}/request-changes`, {
+      method: "POST",
+      body: { comment },
+      tenantScoped: true,
+    });
+  },
+
+  generateCaption(id: number) {
+    return request<{ data: ContentItem; warnings?: string[] }>(
+      `/api/contents/${id}/generate-caption`,
+      { method: "POST", tenantScoped: true },
+    );
+  },
+
+  scheduleContent(id: number, scheduledAt: string) {
+    return request<{ data: ContentItem }>(`/api/contents/${id}/schedule`, {
+      method: "POST",
+      body: { scheduled_at: scheduledAt },
       tenantScoped: true,
     });
   },

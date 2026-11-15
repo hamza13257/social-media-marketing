@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
+use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\MetaOAuthController;
 use App\Http\Controllers\Api\SocialAccountController;
@@ -32,5 +33,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('meta/oauth/url', [MetaOAuthController::class, 'url']);
         Route::apiResource('social-accounts', SocialAccountController::class)
             ->only(['index', 'show', 'update', 'destroy']);
+
+        Route::apiResource('contents', ContentController::class);
+        Route::post('contents/{content}/submit', [ContentController::class, 'submit']);
+        Route::post('contents/{content}/approve', [ContentController::class, 'approve']);
+        Route::post('contents/{content}/reject', [ContentController::class, 'reject']);
+        Route::post('contents/{content}/request-changes', [ContentController::class, 'requestChanges']);
+        Route::post('contents/{content}/schedule', [ContentController::class, 'schedule']);
+        Route::post('contents/{content}/generate-caption', [ContentController::class, 'generateCaption']);
     });
 });

@@ -71,3 +71,26 @@ export type MetaOAuthUrlResponse = {
   authorize_url: string;
   state: string;
 };
+
+export type ContentItem = {
+  id: number;
+  brand_id: number;
+  topic: string;
+  objective: string | null;
+  platform: string;
+  format: string;
+  language: string;
+  caption: string | null;
+  hashtags: string[] | null;
+  call_to_action: string | null;
+  scheduled_at: string | null;
+  status: string;
+  version: number;
+  brand?: { id: number; name: string };
+  author?: { id: number; name: string };
+};
+
+export type ContentsResponse = {
+  data: ContentItem[];
+  meta: { ai_configured: boolean };
+};

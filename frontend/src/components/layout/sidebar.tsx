@@ -8,6 +8,9 @@ const nav = [
   { href: "/dashboard", label: "Overview" },
   { href: "/brands", label: "Brands" },
   { href: "/social-accounts", label: "Social accounts" },
+  { href: "/content-studio", label: "Content studio" },
+  { href: "/approvals", label: "Approvals" },
+  { href: "/calendar", label: "Calendar" },
 ];
 
 export function Sidebar() {
