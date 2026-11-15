@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\SubscriptionStatus;
-use App\Enums\TenantRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\TenantResource;
-use App\Models\Subscription;
-use App\Models\SubscriptionPlan;
-use App\Models\Tenant;
 use App\Models\User;
-use App\Support\GeneratesUniqueSlug;
+use App\Services\Auth\RegistersMarketingWorkspace;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,46 +16,24 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    use GeneratesUniqueSlug;
+    use RegistersMarketingWorkspace;
 
     public function register(RegisterRequest $request): JsonResponse
     {
         $payload = $request->validated();
 
-        $result = DB::transaction(function () use ($payload) {
+        [$user, $tenant, $token] = DB::transaction(function () use ($payload) {
             $user = User::query()->create([
                 'name' => $payload['name'],
                 'email' => $payload['email'],
                 'password' => $payload['password'],
             ]);
 
-            $tenant = new Tenant([
-                'name' => $payload['organization_name'],
-            ]);
-            $tenant->slug = $this->uniqueSlugFor($tenant, $payload['organization_name']);
-            $tenant->save();
-
-            $tenant->users()->attach($user->id, [
-                'role' => TenantRole::Owner->value,
-            ]);
-
-            $plan = SubscriptionPlan::query()
-                ->where('slug', config('billing.default_plan_slug'))
-                ->firstOrFail();
-
-            Subscription::query()->create([
-                'tenant_id' => $tenant->id,
-                'subscription_plan_id' => $plan->id,
-                'status' => SubscriptionStatus::ManualPending,
-                'payment_gateway' => config('billing.gateway'),
-            ]);
-
+            $tenant = $this->provisionDefaultTenant($user, $payload['organization_name']);
             $token = $user->createToken('api')->plainTextToken;
 
             return [$user, $tenant, $token];
         });
-
-        [$user, $tenant, $token] = $result;
 
         return response()->json([
             'token' => $token,
@@ -80,7 +53,19 @@ class AuthController extends Controller
     {
         $user = User::query()->where('email', $request->validated('email'))->first();
 
-        if ($user === null || ! Hash::check($request->validated('password'), $user->password)) {
+        if ($user === null) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        if ($user->password === null) {
+            throw ValidationException::withMessages([
+                'email' => ['Use Google sign-in for this account.'],
+            ]);
+        }
+
+        if (! Hash::check($request->validated('password'), $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);

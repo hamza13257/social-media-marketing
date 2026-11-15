@@ -6,8 +6,10 @@ use App\Enums\PaymentGatewayDriver;
 use App\Enums\SubscriptionStatus;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
+use App\Mail\SubscriptionActivatedMail;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ManualPaymentGateway implements PaymentGateway
 {
@@ -52,6 +54,16 @@ class ManualPaymentGateway implements PaymentGateway
         ]);
         $subscription->save();
 
-        return $subscription->fresh(['plan', 'tenant']);
+        $fresh = $subscription->fresh(['plan', 'tenant']);
+
+        if (config('mail.enabled')) {
+            $owner = $fresh->tenant->users()->wherePivot('role', 'owner')->first();
+
+            if ($owner) {
+                Mail::to($owner->email)->queue(new SubscriptionActivatedMail($fresh));
+            }
+        }
+
+        return $fresh;
     }
 }

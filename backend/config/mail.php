@@ -115,4 +115,8 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    'enabled' => filter_var(env('MAIL_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
+
+    'admin_address' => env('MAIL_ADMIN_ADDRESS'),
+
 ];
