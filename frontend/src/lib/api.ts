@@ -5,6 +5,7 @@ import type {
   AuthResponse,
   BillingInfo,
   Brand,
+  PublicBootstrap,
   ContentItem,
   ContentsResponse,
   PublishingLog,
@@ -16,6 +17,8 @@ import type {
   SubscriptionRecord,
   Tenant,
 } from "@/types/api";
+
+export type { SubscriptionPlan, SubscriptionRecord };
 import {
   clearSession,
   getApiBaseUrl,
@@ -96,6 +99,14 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 }
 
 export const api = {
+  publicBootstrap() {
+    return request<{ data: PublicBootstrap }>("/api/public/bootstrap");
+  },
+
+  googleAuthUrl() {
+    return request<{ url: string }>("/api/auth/google/url");
+  },
+
   register(body: {
     name: string;
     email: string;
@@ -332,6 +343,33 @@ export const api = {
     return request<{ message: string }>(`/api/admin/users/${userId}/super-admin`, {
       method: "PATCH",
       body: { is_super_admin: isSuperAdmin },
+    });
+  },
+
+  adminPlans() {
+    return request<{ data: SubscriptionPlan[] }>("/api/admin/plans");
+  },
+
+  adminUpdatePlan(
+    id: number,
+    body: Partial<Pick<SubscriptionPlan, "name" | "description" | "price_cents">> & {
+      is_public?: boolean;
+      limits?: Record<string, number | null>;
+    },
+  ) {
+    return request<{ data: SubscriptionPlan }>(`/api/admin/plans/${id}`, {
+      method: "PATCH",
+      body,
+    });
+  },
+
+  adminUpsertTenantSubscription(
+    tenantId: number,
+    body: { plan_slug: string; status: string; notes?: string },
+  ) {
+    return request<{ data: SubscriptionRecord }>(`/api/admin/tenants/${tenantId}/subscription`, {
+      method: "PUT",
+      body,
     });
   },
 };

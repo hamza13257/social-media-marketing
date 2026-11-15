@@ -3,6 +3,16 @@ export type User = {
   name: string;
   email: string;
   is_super_admin?: boolean;
+  avatar_url?: string | null;
+};
+
+export type PublicBootstrap = {
+  app_name: string;
+  tagline: string;
+  google_auth_enabled: boolean;
+  payment_gateway: string;
+  plans: SubscriptionPlan[];
+  features: string[];
 };
 
 export type Tenant = {

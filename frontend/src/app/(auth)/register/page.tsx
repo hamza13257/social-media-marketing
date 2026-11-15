@@ -8,6 +8,7 @@ import { persistSession } from "@/lib/session";
 import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -78,6 +79,10 @@ export default function RegisterPage() {
             Register
           </Button>
         </form>
+        <div className="relative my-6">
+          <p className="text-center text-xs uppercase tracking-wide text-slate-600">or</p>
+        </div>
+        <GoogleSignInButton className="w-full" label="Sign up with Google" />
         <p className="mt-6 text-center text-sm text-slate-500">
           Already registered?{" "}
           <Link href="/login" className="text-blue-400 hover:text-blue-300">

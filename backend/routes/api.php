@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\Admin\AdminSubscriptionController;
 use App\Http\Controllers\Api\Admin\AdminTenantController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\GoogleAuthController;
+use App\Http\Controllers\Api\PublicController;
 use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\ContentController;
@@ -18,10 +20,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('health', HealthController::class);
 Route::get('meta/oauth/callback', [MetaOAuthController::class, 'callback']);
+Route::get('public/bootstrap', [PublicController::class, 'bootstrap']);
 
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::get('google/url', [GoogleAuthController::class, 'url']);
+    Route::get('google/callback', [GoogleAuthController::class, 'callback']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -62,6 +67,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('tenants/{tenant}', [AdminTenantController::class, 'show']);
         Route::get('users', [AdminUserController::class, 'index']);
         Route::patch('users/{user}/super-admin', [AdminUserController::class, 'updateSuperAdmin']);
+        Route::get('plans', [\App\Http\Controllers\Api\Admin\AdminPlanController::class, 'index']);
+        Route::patch('plans/{plan}', [\App\Http\Controllers\Api\Admin\AdminPlanController::class, 'update']);
+        Route::put('tenants/{tenant}/subscription', [AdminSubscriptionController::class, 'upsertForTenant']);
         Route::get('subscriptions/pending', [AdminSubscriptionController::class, 'pending']);
         Route::post('subscriptions/{subscription}/activate', [AdminSubscriptionController::class, 'activate']);
         Route::post('subscriptions/{subscription}/suspend', [AdminSubscriptionController::class, 'suspend']);

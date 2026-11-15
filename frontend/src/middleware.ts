@@ -8,6 +8,8 @@ const protectedPrefixes = [
   "/content-studio",
   "/approvals",
   "/calendar",
+  "/billing",
+  "/admin",
 ];
 
 export function middleware(request: NextRequest) {
@@ -38,7 +40,10 @@ export const config = {
     "/content-studio/:path*",
     "/approvals/:path*",
     "/calendar/:path*",
+    "/billing/:path*",
+    "/admin/:path*",
     "/login",
     "/register",
+    "/auth/google/callback",
   ],
 };
