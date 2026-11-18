@@ -25,7 +25,10 @@ return [
     ],
 
     /*
-    | Null limit = unlimited for that metric
+    | Plan limits (JSON on subscription_plans.limits). Null = unlimited.
+    | posts_per_day, reels_per_week, stories_per_day — scheduled/published slots
+    | ai_generations_month — Groq caption/post generations
+    | brands, social_accounts, team_members, storage_mb
     */
     'default_plan_slug' => env('DEFAULT_PLAN_SLUG', 'starter'),
 

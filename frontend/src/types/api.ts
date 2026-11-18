@@ -171,3 +171,25 @@ export type AdminUserRow = {
   email: string;
   is_super_admin: boolean;
 };
+
+export type DashboardStats = {
+  plan_name?: string | null;
+  plan_slug?: string | null;
+  subscription_status?: string | null;
+  limits: Record<string, number | null>;
+  usage: Record<string, number>;
+  content: {
+    by_status: Record<string, number>;
+    upcoming_scheduled: number;
+  };
+};
+
+export type WeekPlanRow = {
+  id: number;
+  week_start: string;
+  brief: string;
+  rhythm: Record<string, unknown>;
+  status: string;
+  brand?: { id: number; name: string } | null;
+  author?: { id: number; name: string } | null;
+};

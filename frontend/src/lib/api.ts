@@ -8,7 +8,9 @@ import type {
   PublicBootstrap,
   ContentItem,
   ContentsResponse,
+  DashboardStats,
   PublishingLog,
+  WeekPlanRow,
   MeResponse,
   MetaOAuthUrlResponse,
   SocialAccount,
@@ -292,6 +294,31 @@ export const api = {
         tenantScoped: true,
       },
     );
+  },
+
+  dashboardStats() {
+    return request<{ data: DashboardStats }>("/api/dashboard/stats", {
+      tenantScoped: true,
+    });
+  },
+
+  listWeekPlans() {
+    return request<{ data: WeekPlanRow[] }>("/api/week-plans", {
+      tenantScoped: true,
+    });
+  },
+
+  createWeekPlan(body: {
+    brand_id: number;
+    week_start: string;
+    brief: string;
+    rhythm: Record<string, unknown>;
+  }) {
+    return request<{ data: WeekPlanRow; message: string }>("/api/week-plans", {
+      method: "POST",
+      body,
+      tenantScoped: true,
+    });
   },
 
   listPublishingLogs(contentId?: number) {

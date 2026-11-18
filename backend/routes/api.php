@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\PublicController;
 use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\ContentController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\WeekPlanController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\MetaOAuthController;
 use App\Http\Controllers\Api\PublishingLogController;
@@ -55,6 +57,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('contents/{content}/publish', [ContentController::class, 'publish']);
 
         Route::get('publishing-logs', [PublishingLogController::class, 'index']);
+
+        Route::get('dashboard/stats', [DashboardController::class, 'stats']);
+        Route::get('week-plans', [WeekPlanController::class, 'index']);
+        Route::post('week-plans', [WeekPlanController::class, 'store']);
 
         Route::get('billing', [BillingController::class, 'subscription']);
         Route::get('billing/plans', [BillingController::class, 'plans']);
