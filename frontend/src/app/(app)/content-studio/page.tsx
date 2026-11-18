@@ -64,7 +64,12 @@ export default function ContentStudioPage() {
       await api.generateCaption(id);
       load();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "AI generation failed.");
+      if (err instanceof ApiError) {
+        const hint = (err.payload as { hint?: string } | undefined)?.hint;
+        setError(hint ? `${err.message} ${hint}` : err.message);
+      } else {
+        setError("AI generation failed.");
+      }
     }
   }
 

@@ -12,4 +12,6 @@ return [
     'model' => env('AI_MODEL', 'llama-3.3-70b-versatile'),
 
     'timeout' => (int) env('AI_TIMEOUT', 60),
+
+    'json_response' => filter_var(env('AI_JSON_RESPONSE', true), FILTER_VALIDATE_BOOLEAN),
 ];

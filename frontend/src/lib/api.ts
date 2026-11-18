@@ -81,10 +81,14 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     }
     const body = payload as {
       message?: string;
+      hint?: string;
       errors?: Record<string, string[]>;
       exception?: string;
     };
     let message = body.message ?? "Request failed.";
+    if (body.hint && response.status === 502) {
+      message = `${message} — ${body.hint}`;
+    }
     if (body.errors) {
       message = Object.values(body.errors).flat().join(" ");
     } else if (response.status >= 500) {

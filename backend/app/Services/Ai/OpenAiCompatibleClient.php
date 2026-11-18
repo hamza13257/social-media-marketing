@@ -2,8 +2,8 @@
 
 namespace App\Services\Ai;
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class OpenAiCompatibleClient implements AiClient
 {
@@ -28,16 +28,36 @@ class OpenAiCompatibleClient implements AiClient
             ]);
         }
 
-        $response = Http::timeout(config('ai.timeout'))
-            ->withToken((string) config('ai.api_key'))
-            ->post(rtrim((string) config('ai.base_url'), '/').'/chat/completions', [
-                'model' => config('ai.model'),
-                'temperature' => 0.7,
-                'response_format' => ['type' => 'json_object'],
-                'messages' => $payloadMessages,
-            ])
-            ->throw()
-            ->json();
+        $endpoint = rtrim((string) config('ai.base_url'), '/').'/chat/completions';
+        $body = [
+            'model' => config('ai.model'),
+            'temperature' => 0.7,
+            'messages' => $payloadMessages,
+        ];
+
+        if (config('ai.json_response', true)) {
+            $body['response_format'] = ['type' => 'json_object'];
+        }
+
+        try {
+            $response = Http::timeout(config('ai.timeout'))
+                ->withToken((string) config('ai.api_key'))
+                ->post($endpoint, $body)
+                ->throw()
+                ->json();
+        } catch (RequestException $exception) {
+            $providerMessage = data_get($exception->response?->json(), 'error.message');
+
+            if (is_string($providerMessage) && $providerMessage !== '') {
+                throw new \RuntimeException('AI provider error: '.$providerMessage, $exception->getCode(), $exception);
+            }
+
+            throw new \RuntimeException(
+                'AI provider request failed. Check AI_API_KEY, AI_BASE_URL, and AI_MODEL (Groq: https://api.groq.com/openai/v1).',
+                $exception->getCode(),
+                $exception
+            );
+        }
 
         $content = data_get($response, 'choices.0.message.content');
 

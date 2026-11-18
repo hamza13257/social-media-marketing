@@ -198,7 +198,15 @@ class ContentController extends Controller
             $content->status = ContentStatus::Draft;
             $content->save();
 
-            return response()->json(['message' => 'AI generation failed.'], 502);
+            $message = $exception->getMessage();
+            if (! str_contains($message, 'AI provider')) {
+                $message = 'AI generation failed. '.$message;
+            }
+
+            return response()->json([
+                'message' => $message,
+                'hint' => 'Set AI_API_KEY (Groq), AI_BASE_URL=https://api.groq.com/openai/v1, AI_MODEL=llama-3.3-70b-versatile, then php artisan config:clear.',
+            ], 502);
         }
 
         /** @var array{0: Content, 1: array<int, string>} $content */
