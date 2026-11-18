@@ -28,6 +28,7 @@ class Content extends Model
         'caption',
         'hashtags',
         'call_to_action',
+        'ai_generated_at',
         'media_assets',
         'post_structure',
         'scheduled_at',
@@ -49,6 +50,7 @@ class Content extends Model
             'media_assets' => 'array',
             'post_structure' => 'array',
             'scheduled_at' => 'datetime',
+            'ai_generated_at' => 'datetime',
             'published_at' => 'datetime',
         ];
     }

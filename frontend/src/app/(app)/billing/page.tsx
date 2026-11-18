@@ -5,6 +5,13 @@ import { ApiError, api } from "@/lib/api";
 import type { BillingInfo, SubscriptionPlan } from "@/types/api";
 import { Button } from "@/components/ui/button";
 
+function formatLimit(value: number | null | undefined): string {
+  if (value === null || value === undefined) {
+    return "Unlimited";
+  }
+  return String(value);
+}
+
 export default function BillingPage() {
   const [info, setInfo] = useState<BillingInfo | null>(null);
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
@@ -113,6 +120,11 @@ export default function BillingPage() {
                 ${(plan.price_cents / 100).toFixed(0)}
                 <span className="text-xs text-slate-500">/mo</span>
               </p>
+              <ul className="mt-3 space-y-1 text-xs text-slate-500">
+                <li>{formatLimit(plan.limits?.posts_per_day)} posts / day</li>
+                <li>{formatLimit(plan.limits?.reels_per_week)} reels / week</li>
+                <li>{formatLimit(plan.limits?.social_accounts)} social accounts</li>
+              </ul>
               <Button
                 className="mt-auto pt-6"
                 disabled={busy || sub?.plan?.slug === plan.slug}

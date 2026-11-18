@@ -15,7 +15,9 @@ use App\Services\Ai\AiCaptionService;
 use App\Services\Ai\AiNotConfiguredException;
 use App\Services\Content\ContentApprovalService;
 use App\Jobs\PublishContentJob;
+use App\Services\Billing\PlanPublishingQuotaService;
 use App\Support\CurrentTenant;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +28,7 @@ class ContentController extends Controller
         private CurrentTenant $currentTenant,
         private ContentApprovalService $approvalService,
         private AiCaptionService $aiCaptionService,
+        private PlanPublishingQuotaService $publishingQuota,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -159,6 +162,15 @@ class ContentController extends Controller
     {
         $this->authorize('publish', $content);
 
+        $tenant = $request->attributes->get('tenant');
+        $slot = $content->scheduled_at ? Carbon::parse($content->scheduled_at) : now();
+
+        try {
+            $this->publishingQuota->assertWithinPublishingLimit($tenant, $content, $slot);
+        } catch (\InvalidArgumentException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
         PublishContentJob::dispatch(
             $content->id,
             $request->validated('social_account_id'),
@@ -175,6 +187,14 @@ class ContentController extends Controller
     {
         $this->authorize('generate', $content);
 
+        $tenant = request()->attributes->get('tenant');
+
+        try {
+            $this->publishingQuota->assertAiGenerationAllowed($tenant);
+        } catch (\InvalidArgumentException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
         try {
             $content = DB::transaction(function () use ($content) {
                 $from = $content->status;
@@ -187,6 +207,7 @@ class ContentController extends Controller
                 $content->hashtags = $result['hashtags'];
                 $content->call_to_action = $result['call_to_action'];
                 $content->post_structure = $result['post_structure'];
+                $content->ai_generated_at = now();
                 $content->transitionTo(ContentStatus::PendingApproval);
                 $content->version++;
                 $content->save();
