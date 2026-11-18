@@ -82,6 +82,17 @@ export type MetaOAuthUrlResponse = {
   state: string;
 };
 
+export type PostStructure = {
+  platform?: string;
+  format?: string;
+  hook?: string | null;
+  image_alt?: string | null;
+  visual_suggestions?: string[];
+  slides?: Array<{ title?: string; body?: string; visual_idea?: string }>;
+  story_frames?: Array<{ text?: string; sticker_idea?: string }>;
+  reel_script?: { hook?: string; scenes?: string[]; on_screen_text?: string[] } | null;
+};
+
 export type ContentItem = {
   id: number;
   brand_id: number;
@@ -94,6 +105,7 @@ export type ContentItem = {
   hashtags: string[] | null;
   call_to_action: string | null;
   media_assets?: { type: string; url: string }[] | null;
+  post_structure?: PostStructure | null;
   scheduled_at: string | null;
   status: string;
   version: number;
@@ -170,4 +182,29 @@ export type AdminUserRow = {
   name: string;
   email: string;
   is_super_admin: boolean;
+};
+
+export type DashboardStats = {
+  plan_name?: string | null;
+  plan_slug?: string | null;
+  subscription_status?: string | null;
+  limits: Record<string, number | null>;
+  usage: Record<string, number>;
+  content: {
+    by_status: Record<string, number>;
+    upcoming_scheduled: number;
+  };
+};
+
+export type WeekPlanRow = {
+  id: number;
+  week_start: string;
+  brief: string;
+  rhythm: Record<string, unknown>;
+  status: string;
+  generated_summary?: Record<string, unknown> | null;
+  error_message?: string | null;
+  contents_count?: number;
+  brand?: { id: number; name: string } | null;
+  author?: { id: number; name: string } | null;
 };

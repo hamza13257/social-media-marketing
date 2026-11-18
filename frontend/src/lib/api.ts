@@ -8,7 +8,9 @@ import type {
   PublicBootstrap,
   ContentItem,
   ContentsResponse,
+  DashboardStats,
   PublishingLog,
+  WeekPlanRow,
   MeResponse,
   MetaOAuthUrlResponse,
   SocialAccount,
@@ -291,6 +293,52 @@ export const api = {
         body: socialAccountId ? { social_account_id: socialAccountId } : {},
         tenantScoped: true,
       },
+    );
+  },
+
+  dashboardStats() {
+    return request<{ data: DashboardStats }>("/api/dashboard/stats", {
+      tenantScoped: true,
+    });
+  },
+
+  listWeekPlans() {
+    return request<{ data: WeekPlanRow[] }>("/api/week-plans", {
+      tenantScoped: true,
+    });
+  },
+
+  createWeekPlan(body: {
+    brand_id: number;
+    week_start: string;
+    brief: string;
+    rhythm: Record<string, unknown>;
+  }) {
+    return request<{ data: WeekPlanRow; message: string }>("/api/week-plans", {
+      method: "POST",
+      body,
+      tenantScoped: true,
+    });
+  },
+
+  getWeekPlan(id: number) {
+    return request<{ data: WeekPlanRow; contents: ContentItem[] }>(
+      `/api/week-plans/${id}`,
+      { tenantScoped: true },
+    );
+  },
+
+  generateWeekPlan(id: number) {
+    return request<{ message: string; week_plan_id: number }>(
+      `/api/week-plans/${id}/generate`,
+      { method: "POST", tenantScoped: true },
+    );
+  },
+
+  approveWeekPlanAll(id: number) {
+    return request<{ message: string; approved_count: number }>(
+      `/api/week-plans/${id}/approve-all`,
+      { method: "POST", tenantScoped: true },
     );
   },
 

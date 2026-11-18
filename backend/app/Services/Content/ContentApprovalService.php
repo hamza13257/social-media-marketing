@@ -7,6 +7,8 @@ use App\Enums\ContentStatus;
 use App\Models\Content;
 use App\Models\ContentApprovalLog;
 use App\Models\User;
+use App\Services\Billing\PlanPublishingQuotaService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ContentApprovalService
@@ -70,6 +72,13 @@ class ContentApprovalService
             if (! in_array($content->status, [ContentStatus::Approved, ContentStatus::Scheduled], true)) {
                 throw new \InvalidArgumentException('Only approved content can be scheduled.');
             }
+
+            $content->loadMissing('tenant');
+            app(PlanPublishingQuotaService::class)->assertWithinPublishingLimit(
+                $content->tenant,
+                $content,
+                Carbon::instance($scheduledAt),
+            );
 
             $from = $content->status;
             $content->scheduled_at = $scheduledAt;

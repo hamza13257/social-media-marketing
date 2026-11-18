@@ -17,7 +17,7 @@ class TenantController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $tenants = $request->user()->tenants()->orderBy('tenant_user.created_at')->get();
+        $tenants = $request->user()->tenants()->orderByPivot('created_at')->get();
 
         return response()->json([
             'data' => TenantResource::collection($tenants),

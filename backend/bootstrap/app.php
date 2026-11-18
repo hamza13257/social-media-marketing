@@ -21,4 +21,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        $exceptions->render(function (\Illuminate\Database\QueryException $exception, Request $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'message' => 'Database error.',
+                'hint' => 'SQLite: touch database/database.sqlite then php artisan migrate. '
+                    .'MySQL: check DB_* in .env. Details in storage/logs/laravel.log.',
+            ], 500);
+        });
     })->create();

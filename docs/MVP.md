@@ -9,8 +9,9 @@ Périmètre actuel du produit (usage personnel puis petites équipes).
 | **Comptes** | Inscription, connexion, organisations multi-tenant, rôles owner / admin / editor |
 | **Marques** | CRUD marques, archivage, quotas selon le plan |
 | **Social** | OAuth Meta, liaison comptes Facebook / Instagram à une marque |
-| **Contenu** | Studio, statuts (brouillon → approbation), calendrier (liste) |
-| **IA** | Génération de légendes via API compatible OpenAI (**Groq par défaut**) |
+| **Contenu** | Studio, statuts, calendrier, **planificateur hebdo** (brief + génération IA semaine) |
+| **Dashboard** | Quotas plan (posts/jour, reels/semaine, IA, comptes sociaux) |
+| **IA** | Posts structurés (format-aware) + plan de semaine via Groq ; pas de génération d’images en MVP |
 | **Publication** | Publication immédiate ou planifiée, logs, texte Facebook, Instagram avec URL image publique |
 | **Abonnements** | Plans Starter / Pro / Agency, paiement **manuel**, activation **manuelle** par super-admin |
 | **Facturation** | Page `/billing` : choix de plan, statut `manual_pending` jusqu’à activation |
@@ -24,7 +25,7 @@ Périmètre actuel du produit (usage personnel puis petites équipes).
 
 - Stripe Checkout + webhooks complets
 - Bibliothèque média / S3, templates visuels
-- Analytics Meta, carrousels / reels
+- Analytics Meta, publication auto carrousels / reels (le copy IA les prépare déjà)
 - Invitations équipe par e-mail
 - Quotas stricts sur comptes sociaux et générations IA (partiellement prévus via JSON `limits`)
 
@@ -32,7 +33,7 @@ Périmètre actuel du produit (usage personnel puis petites équipes).
 
 | Service | Variables |
 |---------|-----------|
-| **Groq** | `AI_API_KEY`, `AI_BASE_URL=https://api.groq.com/openai/v1`, `AI_MODEL=llama-3.3-70b-versatile` |
+| **Groq** | `AI_API_KEY`, `AI_BASE_URL=https://api.groq.com/openai/v1`, `AI_MODEL=openai/gpt-oss-20b` (see `php artisan ai:models`) |
 | **Google** | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` |
 | **Resend** | `RESEND_API_KEY`, `MAIL_MAILER=resend`, `MAIL_ENABLED=true`, `MAIL_FROM_*`, `MAIL_ADMIN_ADDRESS` |
 | **Meta** | `META_APP_ID`, `META_APP_SECRET`, `META_REDIRECT_URI`, `FRONTEND_URL` |
