@@ -82,6 +82,17 @@ export type MetaOAuthUrlResponse = {
   state: string;
 };
 
+export type PostStructure = {
+  platform?: string;
+  format?: string;
+  hook?: string | null;
+  image_alt?: string | null;
+  visual_suggestions?: string[];
+  slides?: Array<{ title?: string; body?: string; visual_idea?: string }>;
+  story_frames?: Array<{ text?: string; sticker_idea?: string }>;
+  reel_script?: { hook?: string; scenes?: string[]; on_screen_text?: string[] } | null;
+};
+
 export type ContentItem = {
   id: number;
   brand_id: number;
@@ -94,6 +105,7 @@ export type ContentItem = {
   hashtags: string[] | null;
   call_to_action: string | null;
   media_assets?: { type: string; url: string }[] | null;
+  post_structure?: PostStructure | null;
   scheduled_at: string | null;
   status: string;
   version: number;

@@ -24,6 +24,7 @@ class ContentResource extends JsonResource
             'hashtags' => $this->hashtags,
             'call_to_action' => $this->call_to_action,
             'media_assets' => $this->media_assets,
+            'post_structure' => $this->post_structure,
             'scheduled_at' => $this->scheduled_at?->toIso8601String(),
             'status' => $this->status->value,
             'social_account_id' => $this->social_account_id,

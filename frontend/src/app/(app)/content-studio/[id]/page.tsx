@@ -7,6 +7,7 @@ import type { ContentItem, PublishingLog, SocialAccount } from "@/types/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { PostPreview } from "@/components/content/post-preview";
 
 export default function ContentDetailPage() {
   const params = useParams<{ id: string }>();
@@ -118,6 +119,10 @@ export default function ContentDetailPage() {
           <span className="ml-2 text-slate-600">· Post {content.external_post_id}</span>
         ) : null}
       </p>
+
+      <div className="mt-8">
+        <PostPreview content={{ ...content, caption }} />
+      </div>
 
       <div className="mt-8 space-y-4">
         <label className="text-xs text-slate-400">Caption</label>

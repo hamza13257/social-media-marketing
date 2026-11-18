@@ -186,6 +186,7 @@ class ContentController extends Controller
                 $content->caption = $result['caption'];
                 $content->hashtags = $result['hashtags'];
                 $content->call_to_action = $result['call_to_action'];
+                $content->post_structure = $result['post_structure'];
                 $content->transitionTo(ContentStatus::PendingApproval);
                 $content->version++;
                 $content->save();

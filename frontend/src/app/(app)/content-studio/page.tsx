@@ -78,7 +78,10 @@ export default function ContentStudioPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-semibold text-white">Content studio</h1>
-          <p className="mt-2 text-slate-400">Create drafts and generate captions with AI.</p>
+          <p className="mt-2 text-slate-400">
+            Pick platform and format, then generate a full post blueprint (caption, slides, reel
+            script, visual ideas). MVP still needs your image URL to publish on Instagram.
+          </p>
         </div>
         <Button onClick={() => setShowForm((v) => !v)}>
           {showForm ? "Close" : "New content"}
@@ -170,7 +173,7 @@ export default function ContentStudioPage() {
                 </div>
                 {item.status === "draft" && aiConfigured ? (
                   <Button variant="ghost" onClick={() => runGenerate(item.id)}>
-                    Generate AI caption
+                    Generate AI post
                   </Button>
                 ) : null}
               </div>
