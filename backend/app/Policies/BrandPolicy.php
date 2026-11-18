@@ -7,6 +7,7 @@ use App\Models\Brand;
 use App\Models\User;
 use App\Services\Billing\SubscriptionQuotaService;
 use App\Support\CurrentTenant;
+use Illuminate\Auth\Access\Response;
 
 class BrandPolicy
 {
@@ -22,24 +23,30 @@ class BrandPolicy
         return $this->sameTenant($brand) && $this->memberWithBrandAccess();
     }
 
-    public function create(User $user): bool
+    public function create(User $user): Response
     {
         if (! $this->memberWithBrandAccess()) {
-            return false;
+            return Response::deny('You do not have permission to create brands in this organization.');
         }
 
         if (! config('billing.enforce_active_subscription')) {
-            return true;
+            return Response::allow();
         }
 
         $tenant = $this->currentTenant->tenant();
         $quota = app(SubscriptionQuotaService::class);
 
         if (! $quota->subscriptionIsUsable($tenant)) {
-            return false;
+            return Response::deny(
+                'Subscription is not active. Open Billing to request a plan, or ask a super-admin to activate your workspace in /admin.'
+            );
         }
 
-        return $quota->withinLimit($tenant, 'brands', $tenant->brands()->count());
+        if (! $quota->withinLimit($tenant, 'brands', $tenant->brands()->count())) {
+            return Response::deny('Brand limit reached for your current plan. Upgrade billing or remove a brand.');
+        }
+
+        return Response::allow();
     }
 
     public function update(User $user, Brand $brand): bool

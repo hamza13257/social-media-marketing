@@ -36,7 +36,14 @@ php artisan schedule:work
 
 Sans **T2**, le bouton *Publish now* reste en file d’attente.
 
-## 4. Parcours publication
+## 4. Erreur « unauthorized » en créant une marque ?
+
+Avec `BILLING_ENFORCE_ACTIVE=true`, un compte en `manual_pending` **ne peut pas** créer de marque.
+
+- **Option A (dev)** : dans `backend/.env` → `BILLING_ENFORCE_ACTIVE=false`, puis `php artisan config:clear`
+- **Option B (prod)** : super-admin → `/admin/subscriptions` → **Activate** ton organisation
+
+## 5. Parcours publication
 
 1. Admin : activer l’abonnement (`/admin`) si `BILLING_ENFORCE_ACTIVE=true`
 2. Lier Meta : `/social-accounts` (quand Meta le permet)
@@ -44,7 +51,7 @@ Sans **T2**, le bouton *Publish now* reste en file d’attente.
 4. **Instagram** : URL image publique HTTPS dans *Media image URL*
 5. **Publish now** ou planifier + scheduler
 
-## 5. Meta minimum
+## 6. Meta minimum
 
 ```env
 META_APP_ID=
