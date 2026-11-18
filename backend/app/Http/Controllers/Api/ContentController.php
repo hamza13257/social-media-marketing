@@ -41,6 +41,7 @@ class ContentController extends Controller
             ->when($request->filled('brand_id'), fn ($q) => $q->where('brand_id', $request->integer('brand_id')))
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->boolean('pending_only'), fn ($q) => $q->where('status', ContentStatus::PendingApproval))
+            ->when($request->filled('week_plan_id'), fn ($q) => $q->where('week_plan_id', $request->integer('week_plan_id')))
             ->orderByDesc('updated_at')
             ->get();
 

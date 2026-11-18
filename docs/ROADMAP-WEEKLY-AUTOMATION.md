@@ -14,16 +14,16 @@ Your target workflow:
 | Plan limits `posts_per_day`, `reels_per_week`, `stories_per_day` | Seeded per Starter / Pro / Agency; **editable in `/admin/plans`** |
 | Usage vs limits on **Dashboard** | `GET /api/dashboard/stats` |
 | Enforcement on schedule / publish / AI generate / new Meta connect | When `BILLING_ENFORCE_ACTIVE=true` |
-| **Week plan** draft (`week_plans` table) | `POST /api/week-plans` + `/planner` UI — saves brief + rhythm only |
-| Image generation | **Not in MVP** — use your own assets or future media pipeline |
-| Full week AI fill + auto-schedule | **Next phases below** |
+| **Week plan** + **Phase 2 AI week** | `POST /week-plans/{id}/generate` (queue), `approve-all`, `/planner` UI |
+| Image generation | Hook only (`IMAGE_PROVIDER=none`); wire API in Phase 3 |
+| Calendar week grid | Still list view — grid polish optional |
 
-## Phase 2 — AI week builder
+## Phase 2 — AI week builder (**shipped on branch `cursor/phase-2-week-ai-f52a`**)
 
-- Job `GenerateWeekPlanJob`: reads `week_plan.brief` + `rhythm`, calls Groq with calendar grid.
-- Creates `contents` rows (draft / pending approval) with `scheduled_at` per slot.
-- User sees week grid in `/calendar` with approve-all / reject / edit.
-- Respect `PlanPublishingQuotaService` before creating slots.
+- `GenerateWeekPlanJob` + `WeekPlanGenerationService`
+- Groq topics per slot + optional format-aware captions
+- `POST /week-plans/{id}/approve-all` schedules approved posts
+- Requires `php artisan queue:work`
 
 ## Phase 3 — Images & media
 

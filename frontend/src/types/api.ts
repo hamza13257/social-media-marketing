@@ -202,6 +202,9 @@ export type WeekPlanRow = {
   brief: string;
   rhythm: Record<string, unknown>;
   status: string;
+  generated_summary?: Record<string, unknown> | null;
+  error_message?: string | null;
+  contents_count?: number;
   brand?: { id: number; name: string } | null;
   author?: { id: number; name: string } | null;
 };

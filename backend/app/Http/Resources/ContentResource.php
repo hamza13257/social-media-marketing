@@ -14,6 +14,7 @@ class ContentResource extends JsonResource
             'id' => $this->id,
             'tenant_id' => $this->tenant_id,
             'brand_id' => $this->brand_id,
+            'week_plan_id' => $this->week_plan_id,
             'created_by_user_id' => $this->created_by_user_id,
             'topic' => $this->topic,
             'objective' => $this->objective,

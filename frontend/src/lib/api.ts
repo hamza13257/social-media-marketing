@@ -321,6 +321,27 @@ export const api = {
     });
   },
 
+  getWeekPlan(id: number) {
+    return request<{ data: WeekPlanRow; contents: ContentItem[] }>(
+      `/api/week-plans/${id}`,
+      { tenantScoped: true },
+    );
+  },
+
+  generateWeekPlan(id: number) {
+    return request<{ message: string; week_plan_id: number }>(
+      `/api/week-plans/${id}/generate`,
+      { method: "POST", tenantScoped: true },
+    );
+  },
+
+  approveWeekPlanAll(id: number) {
+    return request<{ message: string; approved_count: number }>(
+      `/api/week-plans/${id}/approve-all`,
+      { method: "POST", tenantScoped: true },
+    );
+  },
+
   listPublishingLogs(contentId?: number) {
     const q = contentId ? `?content_id=${contentId}` : "";
     return request<{ data: PublishingLog[] }>(`/api/publishing-logs${q}`, {

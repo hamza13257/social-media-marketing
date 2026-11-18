@@ -61,6 +61,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('dashboard/stats', [DashboardController::class, 'stats']);
         Route::get('week-plans', [WeekPlanController::class, 'index']);
         Route::post('week-plans', [WeekPlanController::class, 'store']);
+        Route::get('week-plans/{weekPlan}', [WeekPlanController::class, 'show']);
+        Route::post('week-plans/{weekPlan}/generate', [WeekPlanController::class, 'generate']);
+        Route::post('week-plans/{weekPlan}/approve-all', [WeekPlanController::class, 'approveAll']);
 
         Route::get('billing', [BillingController::class, 'subscription']);
         Route::get('billing/plans', [BillingController::class, 'plans']);

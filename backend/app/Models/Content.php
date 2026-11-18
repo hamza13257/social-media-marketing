@@ -19,6 +19,7 @@ class Content extends Model
     protected $fillable = [
         'tenant_id',
         'brand_id',
+        'week_plan_id',
         'created_by_user_id',
         'topic',
         'objective',
