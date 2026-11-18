@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
-import type { ContentItem, PublishingLog } from "@/types/api";
+import type { ContentItem, PublishingLog, SocialAccount } from "@/types/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,6 +18,9 @@ export default function ContentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<PublishingLog[]>([]);
   const [scheduleAt, setScheduleAt] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [socialAccounts, setSocialAccounts] = useState<SocialAccount[]>([]);
+  const [socialAccountId, setSocialAccountId] = useState<string>("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -28,7 +31,11 @@ export default function ContentDetailPage() {
       ]);
       setContent(res.data);
       setCaption(res.data.caption ?? "");
+      const asset = res.data.media_assets?.find((a) => a.type === "image");
+      setImageUrl(asset?.url ?? "");
       setLogs(logRes.data);
+      const accounts = await api.listSocialAccounts({ brand_id: res.data.brand_id });
+      setSocialAccounts(accounts.data);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Not found.");
     } finally {
@@ -58,9 +65,22 @@ export default function ContentDetailPage() {
     }
   }
 
+  async function saveImageUrl() {
+    const body = imageUrl.trim()
+      ? { media_assets: [{ type: "image", url: imageUrl.trim() }] }
+      : { media_assets: [] };
+    try {
+      const res = await api.updateContent(id, body);
+      setContent(res.data);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Image URL save failed.");
+    }
+  }
+
   async function publishNow() {
     try {
-      await api.publishContent(id);
+      const accountId = socialAccountId ? Number(socialAccountId) : undefined;
+      await api.publishContent(id, accountId);
       setError(null);
       load();
     } catch (err) {
@@ -112,13 +132,48 @@ export default function ContentDetailPage() {
         </div>
       </div>
 
+      <div className="mt-8 space-y-3 rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+        <p className="text-sm font-medium text-white">Media (Instagram)</p>
+        <p className="text-xs text-slate-500">
+          Public HTTPS image URL required for Instagram. Facebook text posts can skip this.
+        </p>
+        <Input
+          className="mt-1"
+          placeholder="https://example.com/image.jpg"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+        />
+        <Button variant="ghost" onClick={saveImageUrl}>
+          Save image URL
+        </Button>
+      </div>
+
       {content.status === "approved" || content.status === "scheduled" ? (
         <div className="mt-8 space-y-3 rounded-xl border border-slate-800 bg-slate-900/40 p-4">
           <p className="text-sm font-medium text-white">Publishing</p>
           <p className="text-xs text-slate-500">
-            Requires a connected Meta account for this brand. Instagram needs a public image URL in
-            media_assets.
+            Run <code className="text-slate-400">php artisan queue:work</code> so jobs complete. Link
+            accounts under Social accounts.
           </p>
+          {socialAccounts.length > 0 ? (
+            <div>
+              <label className="text-xs text-slate-400">Target account (optional)</label>
+              <select
+                className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200"
+                value={socialAccountId}
+                onChange={(e) => setSocialAccountId(e.target.value)}
+              >
+                <option value="">Auto (match platform)</option>
+                {socialAccounts.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.platform_label} — {a.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <p className="text-xs text-amber-400">No social accounts for this brand yet.</p>
+          )}
           <Button onClick={publishNow}>Publish now (queue)</Button>
           <div className="flex flex-wrap items-end gap-2">
             <div className="min-w-[200px] flex-1">

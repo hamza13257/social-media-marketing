@@ -21,6 +21,9 @@ class UpdateContentRequest extends FormRequest
             'hashtags.*' => ['string', 'max:100'],
             'call_to_action' => ['nullable', 'string', 'max:500'],
             'internal_notes' => ['nullable', 'string'],
+            'media_assets' => ['nullable', 'array'],
+            'media_assets.*.type' => ['sometimes', 'string', 'in:image'],
+            'media_assets.*.url' => ['required_with:media_assets', 'url', 'max:2048'],
         ];
     }
 }
