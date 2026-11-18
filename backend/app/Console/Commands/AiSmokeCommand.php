@@ -45,7 +45,10 @@ class AiSmokeCommand extends Command
         $this->line(Str::limit($response->body(), 500));
 
         if (! $response->successful()) {
-            $this->error('AI provider rejected the request. Fix AI_* in .env (Groq: https://api.groq.com/openai/v1).');
+            $this->error('AI provider rejected the request.');
+            $this->line('Base URL should stay: https://api.groq.com/openai/v1');
+            $this->line('Run: php artisan ai:models — then set AI_MODEL to an ID from the list.');
+            $this->line('Common fallback: AI_MODEL=llama-3.1-8b-instant');
 
             return self::FAILURE;
         }
