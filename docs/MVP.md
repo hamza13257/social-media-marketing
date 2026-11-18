@@ -9,7 +9,8 @@ Périmètre actuel du produit (usage personnel puis petites équipes).
 | **Comptes** | Inscription, connexion, organisations multi-tenant, rôles owner / admin / editor |
 | **Marques** | CRUD marques, archivage, quotas selon le plan |
 | **Social** | OAuth Meta, liaison comptes Facebook / Instagram à une marque |
-| **Contenu** | Studio, statuts (brouillon → approbation), calendrier (liste) |
+| **Contenu** | Studio, statuts (brouillon → approbation), calendrier, **planificateur hebdo** (brouillon brief) |
+| **Dashboard** | Quotas plan (posts/jour, reels/semaine, IA, comptes sociaux) |
 | **IA** | Génération de légendes via API compatible OpenAI (**Groq par défaut**) |
 | **Publication** | Publication immédiate ou planifiée, logs, texte Facebook, Instagram avec URL image publique |
 | **Abonnements** | Plans Starter / Pro / Agency, paiement **manuel**, activation **manuelle** par super-admin |
