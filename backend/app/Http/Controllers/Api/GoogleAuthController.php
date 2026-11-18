@@ -20,10 +20,18 @@ class GoogleAuthController extends Controller
             return response()->json(['message' => 'Google sign-in is not configured.'], 503);
         }
 
-        $redirectUrl = Socialite::driver('google')
-            ->stateless()
-            ->redirect()
-            ->getTargetUrl();
+        try {
+            $redirectUrl = Socialite::driver('google')
+                ->stateless()
+                ->redirect()
+                ->getTargetUrl();
+        } catch (\Throwable $exception) {
+            Log::warning('Google auth URL failed', ['error' => $exception->getMessage()]);
+
+            return response()->json([
+                'message' => 'Google sign-in is not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in backend .env.',
+            ], 503);
+        }
 
         return response()->json(['url' => $redirectUrl]);
     }
