@@ -48,7 +48,7 @@ class AiSmokeCommand extends Command
             $this->error('AI provider rejected the request.');
             $this->line('Base URL should stay: https://api.groq.com/openai/v1');
             $this->line('Run: php artisan ai:models — then set AI_MODEL to an ID from the list.');
-            $this->line('Common fallback: AI_MODEL=llama-3.1-8b-instant');
+            $this->line('Groq developer tier (2026): try AI_MODEL=openai/gpt-oss-20b');
 
             return self::FAILURE;
         }

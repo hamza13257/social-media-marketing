@@ -205,7 +205,7 @@ class ContentController extends Controller
 
             return response()->json([
                 'message' => $message,
-                'hint' => 'Set AI_API_KEY (Groq), AI_BASE_URL=https://api.groq.com/openai/v1, AI_MODEL=llama-3.3-70b-versatile, then php artisan config:clear.',
+                'hint' => 'Set AI_API_KEY (Groq), AI_BASE_URL=https://api.groq.com/openai/v1, AI_MODEL=openai/gpt-oss-20b (run php artisan ai:models), then php artisan config:clear.',
             ], 502);
         }
 
