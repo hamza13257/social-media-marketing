@@ -51,7 +51,18 @@ Avec `BILLING_ENFORCE_ACTIVE=true`, un compte en `manual_pending` **ne peut pas*
 4. **Instagram** : URL image publique HTTPS dans *Media image URL*
 5. **Publish now** ou planifier + scheduler
 
-## 6. Meta minimum
+## 6. Tester Groq (Windows / partout)
+
+```bash
+cd backend
+php artisan config:clear
+php artisan ai:smoke
+```
+
+Tu dois voir `HTTP status: 200` et `AI smoke test passed.`  
+Si `401` / `403` : clé ou modèle invalide dans `.env`.
+
+## 7. Meta minimum
 
 ```env
 META_APP_ID=
