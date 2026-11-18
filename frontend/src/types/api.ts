@@ -93,6 +93,7 @@ export type ContentItem = {
   caption: string | null;
   hashtags: string[] | null;
   call_to_action: string | null;
+  media_assets?: { type: string; url: string }[] | null;
   scheduled_at: string | null;
   status: string;
   version: number;

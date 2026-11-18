@@ -1,6 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
+
+const steps = [
+  { href: "/billing", label: "Billing", hint: "Active subscription (or admin activation)" },
+  { href: "/brands", label: "Brands", hint: "Create a brand" },
+  { href: "/social-accounts", label: "Social accounts", hint: "Connect Meta when available" },
+  { href: "/content-studio", label: "Content studio", hint: "Draft → approve → publish" },
+];
 
 export default function DashboardPage() {
   const { user, tenants, activeTenantId } = useAuth();
@@ -9,9 +17,7 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-5xl">
       <h1 className="text-3xl font-semibold text-white">Dashboard</h1>
-      <p className="mt-2 text-slate-400">
-        Premium marketing control center — Phase 1 foundation.
-      </p>
+      <p className="mt-2 text-slate-400">MVP workflow — publishing is on branch <code className="text-slate-500">main</code>.</p>
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         <Panel title="Signed in as" value={user?.name ?? "—"} />
@@ -20,12 +26,34 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
-        <h2 className="text-lg font-medium text-white">Next up (MVP P0)</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-slate-400">
-          <li>Meta OAuth for Instagram & Facebook</li>
-          <li>AI caption generation and content approval</li>
-          <li>Calendar scheduling and publishing jobs</li>
+        <h2 className="text-lg font-medium text-white">Publication (lancer en local)</h2>
+        <pre className="mt-4 overflow-x-auto rounded-lg bg-slate-950 p-4 text-xs text-slate-400">
+{`php artisan serve
+php artisan queue:work
+php artisan schedule:work   # optional — scheduled posts`}
+        </pre>
+        <p className="mt-4 text-sm text-slate-500">
+          See <span className="text-slate-300">docs/MVP-DEMARRAGE.md</span> in the repo.
+        </p>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+        <h2 className="text-lg font-medium text-white">Checklist</h2>
+        <ul className="mt-4 space-y-3">
+          {steps.map((step) => (
+            <li key={step.href}>
+              <Link href={step.href} className="font-medium text-blue-300 hover:text-blue-200">
+                {step.label}
+              </Link>
+              <p className="text-xs text-slate-500">{step.hint}</p>
+            </li>
+          ))}
         </ul>
+        {user?.is_super_admin ? (
+          <p className="mt-4 text-sm text-violet-300">
+            <Link href="/admin">Platform admin</Link> — activate subscriptions
+          </p>
+        ) : null}
       </div>
     </div>
   );

@@ -1,0 +1,55 @@
+# Démarrage MVP (publication incluse)
+
+## 1. Utiliser `main` (pas une vieille branche phase-3)
+
+```bash
+git checkout main
+git pull origin main
+```
+
+La publication (phase 4+) est sur **`main`**.
+
+## 2. Backend
+
+```bash
+cd backend
+composer install
+cp .env.example .env   # si besoin
+php artisan key:generate
+touch database/database.sqlite   # si sqlite
+php artisan migrate
+php artisan db:seed --class=SubscriptionPlanSeeder
+```
+
+## 3. Trois terminaux pour la publication
+
+```bash
+# T1 — API
+php artisan serve
+
+# T2 — jobs (obligatoire pour "Publish now")
+php artisan queue:work
+
+# T3 — posts planifiés (optionnel)
+php artisan schedule:work
+```
+
+Sans **T2**, le bouton *Publish now* reste en file d’attente.
+
+## 4. Parcours publication
+
+1. Admin : activer l’abonnement (`/admin`) si `BILLING_ENFORCE_ACTIVE=true`
+2. Lier Meta : `/social-accounts` (quand Meta le permet)
+3. Créer contenu → approbation
+4. **Instagram** : URL image publique HTTPS dans *Media image URL*
+5. **Publish now** ou planifier + scheduler
+
+## 5. Meta minimum
+
+```env
+META_APP_ID=
+META_APP_SECRET=
+META_REDIRECT_URI=http://127.0.0.1:8000/api/meta/oauth/callback
+```
+
+Pour publier, ajoute les scopes publish (voir commentaire dans `.env.example`) et reconnecte les comptes.

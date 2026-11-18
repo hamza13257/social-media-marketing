@@ -55,7 +55,9 @@ npm install
 npm run dev
 ```
 
-Set `NEXT_PUBLIC_API_URL` to your Laravel host (default `http://127.0.0.1:8000`).
+Set `NEXT_PUBLIC_API_URL` to your Laravel host (default `http://127.0.0.1:8000`). See `frontend/.env.example`.
+
+**Publishing requires a queue worker** — see [docs/MVP-DEMARRAGE.md](docs/MVP-DEMARRAGE.md).
 
 ## Phase 5 — Billing & admin
 
