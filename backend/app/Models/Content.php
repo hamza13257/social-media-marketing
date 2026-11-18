@@ -29,6 +29,7 @@ class Content extends Model
         'hashtags',
         'call_to_action',
         'media_assets',
+        'post_structure',
         'scheduled_at',
         'status',
         'version',
@@ -46,6 +47,7 @@ class Content extends Model
             'status' => ContentStatus::class,
             'hashtags' => 'array',
             'media_assets' => 'array',
+            'post_structure' => 'array',
             'scheduled_at' => 'datetime',
             'published_at' => 'datetime',
         ];
