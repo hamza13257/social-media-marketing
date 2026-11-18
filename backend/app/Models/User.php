@@ -49,7 +49,7 @@ class User extends Authenticatable
             return null;
         }
 
-        return TenantRole::from($pivot->role);
+        return TenantRole::tryFrom((string) $pivot->role);
     }
 
     public function belongsToTenant(Tenant $tenant): bool

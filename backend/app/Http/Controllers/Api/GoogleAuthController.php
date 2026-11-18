@@ -88,7 +88,7 @@ class GoogleAuthController extends Controller
 
         $user->tokens()->where('name', 'api')->delete();
         $token = $user->createToken('api')->plainTextToken;
-        $tenant = $user->tenants()->orderBy('tenant_user.created_at')->first();
+        $tenant = $user->tenants()->orderByPivot('created_at')->first();
 
         $query = http_build_query([
             'token' => $token,

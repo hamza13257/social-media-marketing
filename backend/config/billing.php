@@ -9,7 +9,8 @@ return [
     | Active payment gateway (you choose the driver)
     |--------------------------------------------------------------------------
     */
-    'gateway' => PaymentGatewayDriver::from(env('PAYMENT_GATEWAY', 'manual')),
+    'gateway' => PaymentGatewayDriver::tryFrom((string) env('PAYMENT_GATEWAY', 'manual'))
+        ?? PaymentGatewayDriver::Manual,
 
     'manual' => [
         'instructions' => env(

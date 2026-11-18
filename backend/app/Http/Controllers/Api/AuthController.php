@@ -65,16 +65,26 @@ class AuthController extends Controller
             ]);
         }
 
-        if (! Hash::check($request->validated('password'), $user->password)) {
+        if (! Hash::check($request->validated('password'), $user->getAuthPassword())) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        $user->tokens()->delete();
-        $token = $user->createToken('api')->plainTextToken;
+        try {
+            $user->tokens()->delete();
+            $token = $user->createToken('api')->plainTextToken;
+        } catch (\Throwable $exception) {
+            report($exception);
 
-        $tenant = $user->tenants()->orderBy('tenant_user.created_at')->first();
+            return response()->json([
+                'message' => 'Login failed while creating an API token.',
+                'hint' => 'Run: php artisan key:generate && php artisan migrate (needs personal_access_tokens). '
+                    .'Check backend/storage/logs/laravel.log for the exact error.',
+            ], 503);
+        }
+
+        $tenant = $user->tenants()->orderByPivot('created_at')->first();
 
         return response()->json([
             'token' => $token,
@@ -98,7 +108,7 @@ class AuthController extends Controller
     public function me(Request $request): JsonResponse
     {
         $user = $request->user();
-        $tenants = $user->tenants()->orderBy('tenant_user.created_at')->get();
+        $tenants = $user->tenants()->orderByPivot('created_at')->get();
 
         return response()->json([
             'user' => [
